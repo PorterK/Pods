@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="unnamed">
+    <output-path>$USER_HOME$/Desktop/Development/Minecraft</output-path>
+    <root id="archive" name="pods.jar">
+      <element id="library" level="project" name="spigot" />
+      <element id="module-output" name="Pods" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>

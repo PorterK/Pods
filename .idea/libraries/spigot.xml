@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="spigot">
+    <ANNOTATIONS>
+      <root url="file://$USER_HOME$/MinejoyAPI" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Desktop/Development/Minecraft/spigot.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Desktop/Development/Minecraft/spigot.jar!/" />
+    </SOURCES>
+  </library>
+</component>

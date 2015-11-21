@@ -1,0 +1,7 @@
+name: Pods
+main: me.porterk.pods.PodsMain
+version: 1.0
+commands:
+   pods:
+      description: Pods Plugin
+      aliases: [pods]
