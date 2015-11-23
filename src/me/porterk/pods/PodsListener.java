@@ -18,17 +18,21 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by Kalob on 11/18/2015.
  */
 public class PodsListener implements Listener {
-    BukkitTask launch;
+    public List<Player> inQ = new ArrayList<>();
+    int launch;
     int launchCount = 6;
     Boolean taskDidStart = false;
     Boolean taskIsRunning = false;
     private PodsMain plugin;
+    Boolean specialCir;
 
     public PodsListener(PodsMain plugin) {
         this.plugin = plugin;
@@ -112,10 +116,7 @@ public class PodsListener implements Listener {
             b.setZ(b.getZ() - 1);
 
             if(plugin.locationIsInCuboid(p.getLocation(), a, b )){
-
                 isOnBlock = true;
-
-
             }else{
                 isOnBlock = false;
             }
@@ -123,31 +124,38 @@ public class PodsListener implements Listener {
         }
         if(isOnBlock){
 
-            taskDidStart = true;
-            runLaunch(p, launchCount);
-
-        }else{
-
-            if(taskDidStart){
-                taskDidStart = false;
-                launch.cancel();
+            if(!inQ.contains(p)){
+                if(taskDidStart) {
+                    taskDidStart = false;
+                    endLaunchCycle(p);
+                }else{
+                    taskDidStart = true;
+                }
+                inQ.add(p);
+                runLaunch(p);
             }
 
+        }else{
+            if(taskDidStart && !specialCir) {
+                endLaunchCycle(p);
+
+                p.sendMessage(ChatColor.RED + "You've ended the pod launch!");
+            }
         }
+
+
     }
 
-       public void runLaunch(Player p, final int timesToRun){
+       public void runLaunch(Player p){
 
-           if(!taskIsRunning) {
+           p.sendMessage("DEBUG: Launch Commenced");
 
-               launch = plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+               launch = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
                    @Override
                    public void run() {
+                       launchCount--;
 
-                       while (timesToRun > 0) {
-                           runLaunch(p, timesToRun - 1);
-
-                           switch (timesToRun) {
+                           switch (launchCount) {
 
                                case 5:
                                    p.sendMessage(ChatColor.DARK_RED + "3...");
@@ -161,29 +169,30 @@ public class PodsListener implements Listener {
                                case 2:
                                    p.sendMessage(ChatColor.DARK_RED + "Blast off!");
                                    plugin.launch(p);
-                                   if (p.getLocation().getY() > 100) {
-
-                                       plugin.openWorldSelect(p);
-
-
-                                   }
+                                   specialCir = true;
                                    break;
-                               case 0:
+                               case 1:
                                    plugin.openWorldSelect(p);
-                                   taskDidStart = false;
-                                   launch.cancel();
-                                   taskIsRunning = false;
+                                   launchCount = 6;
+                                   endLaunchCycle(p);
+                                   specialCir = false;
                                    return;
 
                            }
                        }
-
-
-                   }
-               }, 20L);
+               }, 0L, 20L);
 
            }
 
-       }
+        public void endLaunchCycle(Player p){
 
-}
+            Bukkit.getScheduler().cancelTask(launch);
+            taskDidStart = false;
+
+            if(inQ.contains(p)){
+                inQ.remove(p);
+            }
+
+        }
+
+       }
