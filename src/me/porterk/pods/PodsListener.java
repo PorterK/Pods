@@ -64,7 +64,7 @@ public class PodsListener implements Listener {
 
         Player p = (Player) e.getWhoClicked();
 
-        if(e.getInventory() == plugin.worldSelect){
+        if(e.getInventory().getTitle().equalsIgnoreCase("teleportation dock")){
 
             e.setCancelled(true);
 
